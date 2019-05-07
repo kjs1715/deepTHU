@@ -1,13 +1,17 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <head>
+      <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
+    </head>
     <router-view/>
   </div>
 </template>
 
 <script>
+import HelloWorld from './components/HelloWorld'
+
 export default {
-  name: 'App'
+  name: 'App',
 }
 </script>
 
@@ -20,5 +24,4 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-
 </style>
