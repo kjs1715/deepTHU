@@ -81,6 +81,7 @@ import TaskStatusView from './TaskStatusView'
 import ResultDownloadView from './ResultDownload'
 
 export default {
+	serverURL: "http://139.217.99.237:8000/",
 	name: 'Home',
 	data () {
 		return {

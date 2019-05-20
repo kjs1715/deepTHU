@@ -1,7 +1,8 @@
 import axios from 'axios'
+import Home from '../components/Home.vue'
 
 // const serverURL = 'http://192.168.31.94:8000/'
-const serverURL = '/'
+const serverURL = Home.serverURL
 
 export default {
   name: 'TaskStatusRequest',
