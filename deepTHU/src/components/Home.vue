@@ -81,7 +81,6 @@ import TaskStatusView from './TaskStatusView'
 import ResultDownloadView from './ResultDownload'
 
 export default {
-	serverURL: "http://139.217.99.237:8000/",
 	name: 'Home',
 	data () {
 		return {
@@ -212,6 +211,10 @@ export default {
 			this.allDialog = true
 			this.isErrorDialog = true
 			this.errorText = error_info
+		},
+
+		getServerURL() {
+			return "http://139.217.99.237:8000/"
 		}
 	},
 

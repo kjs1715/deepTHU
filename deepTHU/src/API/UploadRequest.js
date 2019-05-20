@@ -1,8 +1,8 @@
 import axios from 'axios'
 import Home from '../components/Home.vue'
 
-// const serverURL = 'http://192.168.31.94:8000/'
-const serverURL = Home.serverURL
+const serverURL = "http://139.217.99.237:8000/"
+// const serverURL = Home.getServerURL()
 
 export default {
   name: 'UploadRequest',
