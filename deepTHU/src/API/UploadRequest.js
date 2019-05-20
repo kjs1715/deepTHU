@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+// const serverURL = 'http://192.168.31.239:8000/'
 const serverURL = '/'
 
 export default {
@@ -10,42 +11,42 @@ export default {
   // method : POST
   postSrcRequest(data_stream) {
     return new Promise((resolve, reject) => {
-      const body = { tasks: [] }
-      body.tasks.push(...data_stream)
+      var formData = new FormData()
+      // const body = { file: [] }
+      // body.file.push(...data_stream)
+      formData.append('file', data_stream)
+      console.log(formData.get('file'))
       axios
-        .post(serverURL + 'api/v1/src/upload', body)
+        .post(serverURL + 'api/v1/src/upload', formData)
         .then(response => {
           let responseCode = response.status
-          console.log(responseCode)
           if (responseCode === 200) {
             resolve(response.data)
           } else if (responseCode === 400 || responseCode === 413) {
-            resolve(response.error_info)
+            reject(response.error_info)
           } else {
-            reject(response.status)
+            reject(response.error_info)
           }
-        }).catch(error => {
-          reject(error.response.status)
         })
     })
   },
 
   // for update video to backend (dst video)
   // method : POST
-  postDstRequest(data_stream) {
+  postDstRequest(data_stream, task_id) {
     return new Promise((resolve, reject) => {
-      const body = { tasks: [] }
-      body.tasks.push(...data_stream)
+      var formData = new FormData()
+      formData.append('file', data_stream)
       axios
-        .post(serverURL + 'api/v1/dst/upload', body)
+        .post(serverURL + 'api/v1/dst/upload?' + task_id, formData)
         .then(response => {
           let responseCode = response.status
           if (responseCode == 200) {
-            resolve(response.data)
+            resolve(response)
           } else if (responseCode >= 400 && responseCode < 500) {
-            resolve(response.error_info)
+            reject(response.error_info)
           } else {
-            reject(response.status)
+            reject(response.error_info)
           }
         })
     })

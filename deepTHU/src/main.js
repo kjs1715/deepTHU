@@ -10,6 +10,8 @@ Vue.use(Vuetify)
 
 Vue.config.productionTip = false
 
+require("../static/mock/mock")
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -3,29 +3,25 @@ import axios from 'axios'
 const serverURL = '/'
 
 export default {
-  name: StatusRequest,
+  name: 'TaskStatusRequest',
 
   // for update video to backend (src video)
   // method : GET
   getTaskStatus(task_id) {
     return new Promise((resolve, reject) => {
       axios
-        .get(serverURL + "/api/v1/task/result?" + task_id)
+        .get(serverURL + "api/v1/task/query?" + task_id)
         .then(response => {
           let responseCode = response.status
           if (responseCode === 200) {
             resolve(response.data)
           } else if(responseCode >= 400 && responseCode < 500) {
-            resolve(response.error_info)
+            reject(response.error_info)
+            console.log(adsfasd)
           } else {
-            reject(response.status)
+            reject(response.error_info)
           }
         })
-        .catch(error => {
-          console.log(error)
-          reject(error)
-        })
     })
-}
-
+  }
 }
