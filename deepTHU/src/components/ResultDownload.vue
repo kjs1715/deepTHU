@@ -50,17 +50,23 @@ export default {
 
   methods: {
     searchTaskID() {
-      TaskResultRequest
-        .getTaskResult(this.inputTaskID)
-        .then((response) => {
-          let reader = new FileReader()
-          reader.addEventListener('load', () => {
-            this.downloadUrl = reader.result
-            console.log(this.downloadUrl)
-            this.onDialog = true
-          }, false)
-          reader.readAsDataURL(new Blob([response.data]))
-        })
+      // TaskResultRequest
+      //   .getTaskResult(this.inputTaskID)
+      //   .then((response) => {
+      //     let reader = new FileReader()
+      //     reader.addEventListener('load', () => {
+      //       this.downloadUrl = reader.result
+      //       console.log(this.downloadUrl)
+      //       this.onDialog = true
+      //     }, false)
+      //     reader.readAsDataURL(new Blob([response.data]))
+      //   })
+      downloadFile()
+    },
+
+    downloadFile() {
+      let path = TaskResultRequest.getFileAPI(this.inputTaskID)
+      window.open(path)
     },
 
     onClicked() {

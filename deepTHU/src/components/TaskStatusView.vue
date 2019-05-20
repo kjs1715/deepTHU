@@ -10,12 +10,19 @@
       solo-inverted
       >
     </v-text-field>
-    Status: {{ task_state }}
+      Status: 
+    <v-btn
+      :color="task_state_color"
+      @click="downloadFile"
+    >
+      {{ task_state }}
+    </v-btn>
   </div>
 </template>
 
 <script>
 import TaskStatusRequest from '../API/TaskStatusRequest'
+import TaskResultRequest from '../API/TaskResultRequest'
 
 export default {
   name: "TaskStatusView",
@@ -27,9 +34,19 @@ export default {
   data() {
     return {
       inputTaskID: "",
-      task_state: null,
-      error_info: 'aaa',
-      task_id: null
+      task_state: 'None',
+      task_state_color: 'second',
+      error_info: null,
+      task_id: null,
+
+      states: {
+        creating: ['CREATING', 'yellow darken-1'],
+        created: ['CREATED', 'yellow'],
+        finished: ['FINISHED', 'green'],
+        running: ['RUNNING', 'blue'],
+        failed: ['FAILED', 'red'],
+        none: ['NONE', 'second']
+      }
     }
   }, 
 
@@ -40,6 +57,12 @@ export default {
       }
       console.log(newVal)
     },
+
+    // task_state(newVal) {
+    //   if (newVal === '' || newVal === null) {
+    //     newVal = 'None'
+    //   }
+    // }
   },
 
   methods: {
@@ -50,24 +73,50 @@ export default {
       // }
 
       // TODO: after testing pls cancel comment under here
-      // this.error_info = null
+      this.error_info = null
       TaskStatusRequest
         .getTaskStatus(this.inputTaskID)
         .then((res) => {
           console.log(res)
           this.task_id = res.task_id
+          this.changeTaskState(res.task_state)
+          console.log(this.task_state)
         })
         .catch((res) => {
           this.error_info = res.error_info
           console.log(res.error_info)
         })
         .then(() => {
+          console.log(this.error_info)
           this.$emit('getData', {
             task_id: this.task_id,
             error_info: this.error_info
           })
         })
 
+    },
+
+    downloadFile() {
+      if (this.task_state === this.states.finished[0]) {
+        let path = TaskResultRequest.getFileAPI(this.inputTaskID)
+        window.open(path)
+      }
+    },
+
+    changeTaskState(task_state) {
+      this.task_state = task_state
+      if (this.task_state === this.states.creating[0])
+        this.task_state_color = this.states.creating[1]
+      else if (this.task_state === this.states.created[0])
+        this.task_state_color = this.states.created[1]
+      else if (this.task_state === this.states.running[0])
+        this.task_state_color = this.states.running[1]
+      else if (this.task_state === this.states.finished[0])
+        this.task_state_color = this.states.finished[1]
+      else if (this.task_state === this.states.failed[0])
+        this.task_state_color = this.states.failed[1]
+      else if (this.task_state === this.states.none[0])
+        this.task_state_color = this.states.none[1]
     }
   }
 }

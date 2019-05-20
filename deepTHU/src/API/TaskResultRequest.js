@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+// const serverURL = 'http://192.168.31.94:8000/'
 const serverURL = '/'
 
 export default {
@@ -10,7 +11,7 @@ export default {
   getTaskResult(task_id) {
     return new Promise((resolve, reject) => {
       axios({
-        url: serverURL + "api/v1/task/result?" + task_id,
+        url: serverURL + "api/v1/task/result?task_id=" + task_id,
         method: 'GET',
         responseType: 'blob'
       }).then((response) => {
@@ -22,5 +23,9 @@ export default {
         }
       })
     })
+  },
+
+  getFileAPI(task_id) {
+    return serverURL + 'api/v1/task/result?task_id=' + task_id
   }
 }

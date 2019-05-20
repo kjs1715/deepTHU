@@ -36,9 +36,9 @@
 		>
 		</task-status-view>
 		<!-- Download component -->
-		<result-download-view>
+		<!-- <result-download-view>
 
-		</result-download-view>
+		</result-download-view> -->
 		<!-- dialogs -->
 		<v-dialog
 			v-model="allDialog"
@@ -88,7 +88,7 @@ export default {
 			taskId: null,
 			srcOrDst: null,
 			errorText: null,
-			sizeLimit: 20,
+			sizeLimit: 50,
 
 			nothingSuccess: true,
 			srcFileSuccess: false,
@@ -156,6 +156,7 @@ export default {
 						})
 				} else if (this.srcFileSuccess) {
 					// case dst uploaded
+					console.log("here is dst")
 					UploadRequest
 						.postDstRequest(this.fileData, this.taskId)
 						.then((res) => {
@@ -164,10 +165,13 @@ export default {
 							this.allDialog = true
 							this.srcFileSuccess = false
 							this.dstFileSuccess = true
+							this.btnDisable = true
 							this.fileData = null
+							console.log("success")
 						})
 						.catch((error_info) => {
 							errorDialog(error_info)
+							console.log('failed')
 						})
 				}
 				this.$refs.pathClear.value = '' // clear file

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-// const serverURL = 'http://192.168.31.239:8000/'
+// const serverURL = 'http://192.168.31.94:8000/'
 const serverURL = '/'
 
 export default {
@@ -38,11 +38,11 @@ export default {
       var formData = new FormData()
       formData.append('file', data_stream)
       axios
-        .post(serverURL + 'api/v1/dst/upload?' + task_id, formData)
+        .post(serverURL + 'api/v1/dst/upload?task_id=' + task_id, formData)
         .then(response => {
           let responseCode = response.status
           if (responseCode == 200) {
-            resolve(response)
+            resolve(response.data)
           } else if (responseCode >= 400 && responseCode < 500) {
             reject(response.error_info)
           } else {

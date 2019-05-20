@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+// const serverURL = 'http://192.168.31.94:8000/'
 const serverURL = '/'
 
 export default {
@@ -10,7 +11,7 @@ export default {
   getTaskStatus(task_id) {
     return new Promise((resolve, reject) => {
       axios
-        .get(serverURL + "api/v1/task/query?" + task_id)
+        .get(serverURL + "api/v1/task/query?task_id=" + task_id)
         .then(response => {
           let responseCode = response.status
           if (responseCode === 200) {
@@ -23,5 +24,5 @@ export default {
           }
         })
     })
-  }
+  },
 }
