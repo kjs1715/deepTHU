@@ -33,7 +33,7 @@ Mock.mock(RegExp(serverURL + "api/v1/dst/upload?" + '.*'), 'post', (req) => {
   }
 })
 
-Mock.mock(RegExp(serverURL + "api/v1/task/query?" + '.*'), 'get', (req) => {
+Mock.mock(RegExp(serverURL + "api/v1/task/query?task_id=" + '.*'), 'get', (req) => {
   index = req.url.indexOf('?')
   str = req.url.substr(index+1, req.url.length)
   // if (str !== '') {
@@ -43,14 +43,14 @@ Mock.mock(RegExp(serverURL + "api/v1/task/query?" + '.*'), 'get', (req) => {
   //   }
   // } else {
     return {
-      status: "404",
+      status: "200",
       error_info: "Only one file in field 'file' should be uploaded."
       // task_id: "12345678"
     // }
   } 
 })
 
-Mock.mock(RegExp(serverURL + "api/v1/task/result?" + '.*'), 'get', (req) => {
+Mock.mock(RegExp(serverURL + "api/v1/task/result?task_id=" + '.*'), 'get', (req) => {
   console.log("Received request")
   return {
     status: "200",

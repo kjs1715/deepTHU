@@ -8,6 +8,7 @@
       color="rgb(245,245,220)"
       solo-inverted
       @click:append="searchTaskID"
+      @keypress.enter.native="searchTaskID"
       >
     </v-text-field>
     		<v-dialog

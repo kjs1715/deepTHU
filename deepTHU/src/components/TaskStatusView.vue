@@ -17,6 +17,26 @@
     >
       {{ task_state }}
     </v-btn>
+		<v-dialog
+      v-model="isLoading"
+      hide-overlay
+      persistent
+      max-width="700"
+    >
+      <v-card
+        color="primary"
+        dark
+      >
+        <v-card-text>
+          Searching...Please wait...
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -37,7 +57,9 @@ export default {
       task_state: 'None',
       task_state_color: 'second',
       error_info: null,
-      task_id: null,
+      task_id: '',
+
+      isLoading: false,
 
       states: {
         creating: ['CREATING', 'yellow darken-1'],
@@ -74,6 +96,8 @@ export default {
 
       // TODO: after testing pls cancel comment under here
       this.error_info = null
+      if (this.task_id)
+      this.isLoading = true
       TaskStatusRequest
         .getTaskStatus(this.inputTaskID)
         .then((res) => {
@@ -87,22 +111,27 @@ export default {
           console.log(res.error_info)
         })
         .then(() => {
+          this.isLoading = false
+        })
+        .then(() => {
           console.log(this.error_info)
           this.$emit('getData', {
             task_id: this.task_id,
             error_info: this.error_info
           })
+          console.log('here')
         })
-
     },
 
     downloadFile() {
+      console.log("clicked")
       if (this.task_state === this.states.finished[0]) {
         let path = TaskResultRequest.getFileAPI(this.inputTaskID)
         window.open(path)
       }
     },
-
+    
+    // change colors of status
     changeTaskState(task_state) {
       this.task_state = task_state
       if (this.task_state === this.states.creating[0])

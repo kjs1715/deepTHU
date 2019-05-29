@@ -1,8 +1,9 @@
 import axios from 'axios'
-import Home from '../components/Home.vue'
+import Const from '../../static/const'
 
-const serverURL = "http://139.217.99.237:8000/"
-// const serverURL = 'http://192.168.31.94:8000/'
+// const serverURL = "http://139.217.99.237:8000/"
+// const serverURL = Home.getServerURL()
+const serverURL = Const.serverURL
 
 export default {
   name: 'TaskStatusRequest',
@@ -17,9 +18,9 @@ export default {
           let responseCode = response.status
           if (responseCode === 200) {
             resolve(response.data)
-          } else if(responseCode >= 400 && responseCode < 500) {
+          } else if(responseCode === 400 || responseCode === 404) {
             reject(response.error_info)
-            console.log(adsfasd)
+            console.log("qqqqq")
           } else {
             reject(response.error_info)
           }
