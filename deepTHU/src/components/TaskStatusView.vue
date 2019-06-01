@@ -14,10 +14,11 @@
     <v-btn
       :color="task_state_color"
       @click="downloadFile"
+      :loading="isLoading"
     >
       {{ task_state }}
     </v-btn>
-		<v-dialog
+		<!-- <v-dialog
       v-model="isLoading"
       hide-overlay
       persistent
@@ -36,7 +37,7 @@
           ></v-progress-linear>
         </v-card-text>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
   </div>
 </template>
 

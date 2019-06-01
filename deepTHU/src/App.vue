@@ -1,9 +1,25 @@
 <template>
   <div id="app">
     <head>
-      <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
     </head>
     <router-view/>
+    <div id="footer">
+			<v-footer
+				dark
+				height="auto"
+        fixed
+			>
+				<v-card
+      		class="flex"
+      		flat
+      		tile
+    		>
+					<v-card-text>
+						Hiiiiiiiiii
+					</v-card-text>
+				</v-card>
+			</v-footer>
+		</div>
   </div>
 </template>
 

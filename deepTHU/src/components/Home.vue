@@ -1,44 +1,35 @@
 <template>
   <div id="Home">
-		<div id="header" style="height: 200px;"></div> 
-		<p id="title">Deep THU</p>
+		<div id="header" style="height: 100px;"></div> 
+		<p id="title" style="padding: 5px; margin-bottom: 10px;">Deep THU</p>
 		<!-- module for src file uploading -->
 		<div id="body">
-			<div id="srcFile" v-if="nothingSuccess">
-				<p><br>Src file here</p>
-				<v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
+			<div id="srcFile" v-if="nothingSuccess" style="margin-top: 100px;"> 
 				<v-btn
-			   	color="blue-grey"
-      		class="white--text"
+					:color="!localFileUploaded ? 'blue-grey' : 'green'"
 					@click="onUploadButtonClicked"
+					:loading="isLoading"
 				>
 					<input style="display: none;" type="file" ref="video" name="fileSrc" class="fileBtn" @change="getFile" :disabled="btnDisable"/>
-					<v-icon left dark>cloud_upload</v-icon>
-					Find files
-				</v-btn>
-				</v-flex>
-				<v-btn 
-					color="second"
-					@click="submitVideo"
-					:disabled="btnDisable"
-				>
-					Upload
+					<v-icon left dark color="white">cloud_upload</v-icon>
+					<font color="white"> {{ btnFileUploadStr }}</font>
 				</v-btn>
 			</div>
 			<div id="jumpSrcFile">
 				<a href="javascript:void(0)" v-if="nothingSuccess" @click="onJumpSrcFileClicked">If you have task id for srcFile, click here</a>
 			</div>
 			<!-- module for dst file uploading -->
-			<div id="dstFile" v-if="srcFileSuccess">
-				<p><br>Dst file here</p>
-				<input type="file" ref="video" name="fileDst" class="fileBtn" @change="getFile" :disabled="btnDisable"/>
-				<v-btn 
-					color="second"
-					@click="submitVideo"
-					:disabled="btnDisable"
+			<div id="dstFile" v-if="srcFileSuccess" style="margin-top: 50px;"> 
+				<v-btn
+					:color="!localFileUploaded ? 'blue-grey' : 'green'"
+					@click="onUploadButtonClicked"
+					:loading="isLoading"
 				>
-					Upload
+					<input style="display: none;" type="file" ref="video" name="fileSrc" class="fileBtn" @change="getFile" :disabled="btnDisable"/>
+					<v-icon left dark color="white">cloud_upload</v-icon>
+					<font color="white"> {{ btnFileUploadStr }}</font>
 				</v-btn>
+			</div>
 			</div>
 			<!-- Search component -->
 			<task-status-view
@@ -56,9 +47,9 @@
 					persistent
 					max-width="700"
 				>
-					<v-card dark color="red">
-						<v-card-title color="red">
-							<v-icon left>block</v-icon>Error
+					<v-card dark color="red lighten-2">
+						<v-card-title>
+							<v-icon left large>block</v-icon>Error
 						</v-card-title>
 						<v-card-text v-if="isBigFileDialog">
 							Your file should be smaller than {{ sizeLimit }}MB, pls upload again...
@@ -72,16 +63,14 @@
 						<v-card-text v-else-if="isNotVideoFileDialog">
 							Pls input correct type of video file!! (Now only supporting mp4)
 						</v-card-text>
-							<v-card-actions>
-								<v-spacer></v-spacer>
-								<v-btn
-									color="white"
-									round
-									@click="allDialogChange"
-								>
-									<font color="red">OK</font>
-								</v-btn>
-						</v-card-actions>
+						<v-spacer></v-spacer>
+						<v-btn
+							color="white"
+								round
+							@click="allDialogChange"
+						>
+							<font color="black">OK</font>
+						</v-btn>
 					</v-card>
 				</v-dialog>
 				<!-- success dialogs -->
@@ -91,9 +80,9 @@
 					persistent
 					round
 				>
-					<v-card dark color="green">
+					<v-card dark color="rgb(182, 214, 146)">
 						<v-card-title>
-							<v-icon dark left>check_circle</v-icon>
+							<v-icon dark left large>check_circle</v-icon>
 							Hurrrray!
 						</v-card-title>
 						<v-card-text>
@@ -107,22 +96,22 @@
 							round
 							@click="allDialogChange"
 						>
-							<font color="green">OK</font>
+							<font color="black">OK</font>
 						</v-btn>
 					</v-card>
 				</v-dialog>
 				<!-- loading dialog -->
-				<v-dialog
+				<!-- <v-dialog
 					v-model="isLoading"
 					persistent
 					max-width="700"
 				>
 					<v-card
-						color="yellow darken-2"
+						color="yellow lighten-2"
 						dark
 					>
 						<v-card-title>
-							<v-icon dark left>timelapse</v-icon>
+							<v-icon dark left large>timelapse</v-icon>
 							Just wait
 						</v-card-title>
 						<v-card-text>
@@ -134,7 +123,7 @@
 							></v-progress-linear>
 						</v-card-text>
 					</v-card>
-				</v-dialog>
+				</v-dialog> -->
 				<!-- result dialog -->
 				<v-dialog
 					v-model="allSuccess"
@@ -142,11 +131,11 @@
 					max-width="700"
 				>
 					<v-card
-						color="blue lighten-1"
+						color="rgb(161, 191, 207)"
 						dark
 					>
 						<v-card-title>
-							<v-icon dark left>work</v-icon>
+							<v-icon dark left large>work</v-icon>
 							Succeed!
 						</v-card-title>
 						<v-card-text>
@@ -164,7 +153,7 @@
 								round
 								@click="clear"
 							>
-								<font color="blue">OK</font>
+								<font color="black">OK</font>
 							</v-btn>
 						</v-card-text>
 					</v-card>
@@ -193,7 +182,7 @@
 								round
 								@click="submitButtonClicked"
 							>
-								<font color="blue">SUBMIT</font>
+								<font color="black">SUBMIT</font>
 							</v-btn>
 						</v-card-text>
 					
@@ -228,6 +217,9 @@ export default {
 			allSuccess: false,
 			taskIdResult: false,
 
+			// judge whether file is uploaded onto browser or not
+			localFileUploaded : false,
+
 			successDialog: false,
 			errorDialog: false,
 			noFileDialog: false,
@@ -238,6 +230,8 @@ export default {
 			isLoading: false,
 
 			btnDisable: false,
+
+			btnFileUploadStr: "Find src file"
 		}
 	},
 
@@ -266,6 +260,17 @@ export default {
 			} else {
 				this.btnDisable = false
 			}
+		},
+
+		localFileUploaded(newVal) {
+			// status for string of upload button
+			if ((newVal == true && this.nothingSuccess) || (newVal == true && this.srcFileSuccess)) {
+				this.btnFileUploadStr = "upload file"
+			} else if (newVal == false && this.srcFileSuccess) {
+				this.btnFileUploadStr = "find dst file"
+			} else if (newVal == false && (this.nothingSuccess || this.dstFileSuccess)) {
+				this.btnFileUploadStr = "find src file"
+			}
 		}
 	},
 
@@ -289,10 +294,15 @@ export default {
 				this.fileData = null
 				return 
 			}
+			this.localFileUploaded = true
 			console.log(this.fileData)
 		},
 
 		submitVideo () {
+			console.log("submit video")
+			if (!this.localFileUploaded) {
+				return 
+			}
 			if (this.fileData != null) {
 				// for loading (network delay)
 				this.isLoading = true
@@ -310,6 +320,7 @@ export default {
 							this.nothingSuccess = false
 							this.btnDisable = true
 							this.fileData = null
+							this.localFileUploaded = false
 						})
 						.catch((error_info) => {
 							onErrorDialogTriggered(error_info)
@@ -329,6 +340,7 @@ export default {
 							this.dstFileSuccess = true;
 							this.btnDisable = true
 							this.fileData = null
+							this.localFileUploaded = false
 							console.log("success")
 						})
 						.catch((error_info) => {
@@ -395,7 +407,12 @@ export default {
 		},
 
 		onUploadButtonClicked() {
-			this.$refs.video.click()
+			console.log(this.localFileUploaded)
+			if (!this.localFileUploaded) {
+				this.$refs.video.click()
+			} else {
+				this.submitVideo();
+			}
 		},
 
 		// back to the firt state of website
@@ -405,6 +422,8 @@ export default {
 			this.dstFileSuccess = false
 			this.allSuccess = false
 			this.taskId = ''
+			this.fileData = null
+			Object.assign(this.$data, this.$options.data())
 		},
 
 		clearFilePaths() {
@@ -449,13 +468,25 @@ export default {
 }
 
 #title {
-	font-size: 110px;	
+	font-family: "Montserrat", sans-serif;
+	font-smoothing: antialiased;
+	font-size: 4em;	
 	font-weight: 100;
+	text-shadow: 0 1px 2px rgba(black,.15);
+	/* font-family:  */
 }
 
 #jumpSrcFile a {
 	color: beige;
 	font-size: 20px;
+}
+
+.btnFindFileClass {
+	color: blue-grey;
+}
+
+.btnFileUploadedClass {
+	color: green;
 }
 
 
