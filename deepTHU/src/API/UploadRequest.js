@@ -10,7 +10,7 @@ export default {
 
   // for update video to backend (src video)
   // method : POST
-  postSrcRequest(data_stream) {
+  postSrcRequest(data_stream, training_time, email) {
     return new Promise((resolve, reject) => {
       var formData = new FormData()
       // const body = { file: [] }
@@ -18,7 +18,7 @@ export default {
       formData.append('file', data_stream)
       console.log(formData.get('file'))
       axios
-        .post(serverURL + 'api/v1/src/upload', formData)
+        .post(serverURL + 'api/v1/src/upload?training_time=' + training_time + "&email=" + email, formData)
         .then(response => {
           let responseCode = response.status
           if (responseCode === 200) {

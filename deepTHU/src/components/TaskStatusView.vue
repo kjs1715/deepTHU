@@ -1,13 +1,14 @@
 <template>
   <div id="task-status-view">
-    <p><br> Search your task here </p>
+    <br><br>
     <v-text-field 
       v-model="inputTaskID"
       append-icon="search" 
-      label="Input Task ID Here"
+      label="Input your Task ID Here and Check for Progress"
       color="rgb(245,245,220)"
       @click:append="searchTaskID"
       solo-inverted
+      dark
       >
     </v-text-field>
       Status: 

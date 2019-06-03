@@ -15,7 +15,7 @@
       		tile
     		>
 					<v-card-text>
-						Hiiiiiiiiii
+						DO NOT UPLOAD PORN VIDEOS
 					</v-card-text>
 				</v-card>
 			</v-footer>
@@ -43,5 +43,6 @@ export default {
   position: fixed;
   width: 100%;
   height: 100%;
+  overflow: scroll;
 }
 </style>

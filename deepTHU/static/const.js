@@ -1,3 +1,4 @@
 export default {
-  serverURL: "/"
+  // serverURL: "/"
+  serverURL: "http://183.172.240.254:8000/"
 }

@@ -9,27 +9,52 @@
 					:color="!localFileUploaded ? 'blue-grey' : 'green'"
 					@click="onUploadButtonClicked"
 					:loading="isLoading"
+					:disabled="btnDisable"
 				>
 					<input style="display: none;" type="file" ref="video" name="fileSrc" class="fileBtn" @change="getFile" :disabled="btnDisable"/>
-					<v-icon left dark color="white">cloud_upload</v-icon>
-					<font color="white"> {{ btnFileUploadStr }}</font>
+					<v-icon left dark color="white">folder_open</v-icon>
+					<font :color="!btnDisable ? 'white' : 'black' "> {{ btnFileUploadStr }}</font>
+				</v-btn>
+				<v-btn
+					@click="submitVideo"
+					:disabled="btnDisable"
+				>
+					<v-icon left>cloud_upload</v-icon>
+					 Upload
 				</v-btn>
 			</div>
 			<div id="jumpSrcFile">
 				<a href="javascript:void(0)" v-if="nothingSuccess" @click="onJumpSrcFileClicked">If you have task id for srcFile, click here</a>
 			</div>
 			<!-- module for dst file uploading -->
-			<div id="dstFile" v-if="srcFileSuccess" style="margin-top: 50px;"> 
+			<div id="dstFile" v-if="srcFileSuccess" style="margin-top: 100px;"> 
 				<v-btn
 					:color="!localFileUploaded ? 'blue-grey' : 'green'"
 					@click="onUploadButtonClicked"
 					:loading="isLoading"
+					:disabled="btnDisable"
 				>
 					<input style="display: none;" type="file" ref="video" name="fileSrc" class="fileBtn" @change="getFile" :disabled="btnDisable"/>
 					<v-icon left dark color="white">cloud_upload</v-icon>
 					<font color="white"> {{ btnFileUploadStr }}</font>
 				</v-btn>
+				<v-btn
+					@click="submitVideo"
+					:disabled="btnDisable"
+				>
+					<v-icon left>cloud_upload</v-icon>
+					 Upload
+				</v-btn>
 			</div>
+			<div id="fileName">
+				<v-text-field
+					:value="fileDataName"
+					label="File Chosen"
+			    solo-inverted
+      		dark
+					disabled
+				>
+				</v-text-field>
 			</div>
 			<!-- Search component -->
 			<task-status-view
@@ -41,7 +66,6 @@
 
 			</result-download-view> -->
 			<!-- error dialogs -->
-    	<v-layout row justify-center>
 				<v-dialog
 					v-model="errorDialog"
 					persistent
@@ -184,13 +208,59 @@
 							>
 								<font color="black">SUBMIT</font>
 							</v-btn>
+							<v-btn
+								color="white"
+								round
+								@click="onBackButtonClicked"
+							>
+								<font color="black">BACK</font>
+							</v-btn>
 						</v-card-text>
 					
 					</v-card>
+				</v-dialog>
+				<!-- userFormDialog -->
+				<v-dialog
+					v-model="userDialog"
+					max-width="700px"
+					persistent
+				>
+					<v-card
+						dark
+					>
+						<v-card-title
+						>
+							<font color="white"> Before Upload...</font>
+						</v-card-title>
+					</v-card>
+					<v-card
+						
+					>
+						<v-card-text
+						>
+						<v-text-field
+							v-model="email"
+							label="E-mail (Recommanded)"
+							:rules="[rules.email]"
+						>
 
+						</v-text-field>
+						</v-card-text>
+
+						<v-btn
+							@click="onUserFormOkClicked"
+							round
+						>
+							<font color="black">OK</font>
+						</v-btn>
+						<v-btn
+							round
+						>
+							<font color="black">BACK</font>
+						</v-btn>
+					</v-card>	
 
 				</v-dialog>
-    	</v-layout>
 		</div>
 	</div>
 </template>
@@ -198,6 +268,8 @@
 import UploadRequest from '../API/UploadRequest'
 import TaskStatusView from './TaskStatusView'
 import ResultDownloadView from './ResultDownload'
+import { Promise, resolve } from 'q';
+import { error } from 'util';
 
 export default {
 	name: 'Home',
@@ -205,6 +277,7 @@ export default {
 	data () {
 		return {
 			fileData: null,
+			fileDataName:"",
 			taskId: null,
 			srcOrDst: null,
 			errorText: null,
@@ -231,7 +304,23 @@ export default {
 
 			btnDisable: false,
 
-			btnFileUploadStr: "Find src file"
+			btnFileUploadStr: "Find src file",
+
+			// email
+			email: ' ',
+			// training time 
+			training_time: 4,
+
+			// variables for user form data
+			userFormData: false, 
+			userDialog: false,
+
+			rules: {
+				email: value => {
+				const pattern = /(^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$)|(^$)/;
+      	return pattern.test(value) || 'Invalid e-mail.'
+		}
+	},
 		}
 	},
 
@@ -240,9 +329,14 @@ export default {
 		ResultDownloadView: ResultDownloadView
 	},
 
+
+
 	/*
 	TODO: 1. Upload button: after btn clicked, it should become green and show file ref in a textfield or other components
 	TODO: 2. adjust some sizes of components, it looks disgusting 
+	TODO: 3. formData: back button; checkbox; testing
+	TODO: 4. maybe I need to add history func in order to make sure people do not forget their ids
+	TODO: 5. add a function for copy ids from ctrl-c (clipboard)
 	*/
 	watch: {
 		// for preventing other parts (Ex: buttons, input form) could be clicked while dialog is existing
@@ -265,25 +359,30 @@ export default {
 		localFileUploaded(newVal) {
 			// status for string of upload button
 			if ((newVal == true && this.nothingSuccess) || (newVal == true && this.srcFileSuccess)) {
-				this.btnFileUploadStr = "upload file"
+				this.btnFileUploadStr = "FIND AGAIN"
 			} else if (newVal == false && this.srcFileSuccess) {
 				this.btnFileUploadStr = "find dst file"
 			} else if (newVal == false && (this.nothingSuccess || this.dstFileSuccess)) {
 				this.btnFileUploadStr = "find src file"
 			}
-		}
+		}, 
 	},
 
 	methods: {
 		// function for uploading files onto browser, including size limit for file
 		getFile (event) {
+			console.log("get file here")
 			this.fileData = event.target.files[0]
+			this.fileDataName = event.target.files[0].name
+			console.log(this.fileData)
 			if (this.isBigFile) {
 				this.isBigFileDialog = true
 				this.errorDialog = true
 				this.clearFilePaths()
 				// this.btnDisable = true
 				this.fileData = null
+				this.fileDataName = ''
+				this.localFileUploaded = false
 				return 
 			}
 			if (!this.isVideoFile) {
@@ -292,6 +391,9 @@ export default {
 				this.clearFilePaths()
 				// this.btnDisable = true
 				this.fileData = null
+				this.fileDataName = ''
+				this.localFileUploaded = false
+				console.log("triggered file extention error")
 				return 
 			}
 			this.localFileUploaded = true
@@ -308,12 +410,18 @@ export default {
 				this.isLoading = true
 				if (this.nothingSuccess) {
 					// case src upoloaded
+					// user needs to input email(recommanded) and training time before upload
+					if (!this.userFormData && this.fileData != null) {
+							this.userDialog = true
+							this.btnDisable = true
+							return 
+					}
+					console.log(this.email)
 					UploadRequest
-						.postSrcRequest(this.fileData)
+						.postSrcRequest(this.fileData, this.training_time, this.email)
 						.then((res) => {
 							console.log(res)
 							this.taskId = res.task_id
-							this.srcFileSuccess = true 
 							this.srcOrDst = 'src'
 							this.successDialog = true
 							this.srcFileSuccess = true
@@ -323,7 +431,8 @@ export default {
 							this.localFileUploaded = false
 						})
 						.catch((error_info) => {
-							onErrorDialogTriggered(error_info)
+							this.onErrorDialogTriggered(error_info)
+							console.log(err)
 						})
 						.then(() => {
 							this.isLoading = false
@@ -397,22 +506,31 @@ export default {
 
 		onJumpSrcFileClicked() {
 			console.log("onJumpSrcFileClicked")
-			this.skipSrcFileDialog = true;
+			this.skipSrcFileDialog = true
+			this.btnDisable = true
 		},
 
 		submitButtonClicked() {
-			this.skipSrcFileDialog = false;
+			this.skipSrcFileDialog = false
 			this.srcFileSuccess = true
 			this.nothingSuccess = false
+			this.btnDisable = false
 		},
 
 		onUploadButtonClicked() {
-			console.log(this.localFileUploaded)
-			if (!this.localFileUploaded) {
-				this.$refs.video.click()
-			} else {
-				this.submitVideo();
-			}
+			this.$refs.video.click()
+		},
+
+		onBackButtonClicked() {
+			this.btnDisable = false
+			this.skipSrcFileDialog = false
+		},
+
+		onUserFormOkClicked() {
+			this.userFormData = true
+			this.userDialog = false
+			this.btnDisable = false
+			this.isLoading = false
 		},
 
 		// back to the firt state of website
@@ -428,7 +546,8 @@ export default {
 
 		clearFilePaths() {
 			this.$refs.video.value = ''
-			this.allDialogChange()
+			this.fileDataName = ''
+			// this.allDialogChange()
 		}
 	},
 
@@ -443,6 +562,7 @@ export default {
 
 		isVideoFile() {
 			var type = this.fileData.type
+			console.log(type)
 			if (type === "video/mp4") {
 				return true
 			}
@@ -479,6 +599,24 @@ export default {
 #jumpSrcFile a {
 	color: beige;
 	font-size: 20px;
+	position: relative;
+}
+
+#srcFile {
+	/* width: 30%; */
+	position: relative;
+}
+
+#dstFile {
+	position: relative;
+}
+
+#fileName {
+	padding: 50px;
+	margin: 0 auto;
+	max-width: 700px;
+	width: 500px;
+	align-self: center;
 }
 
 .btnFindFileClass {
