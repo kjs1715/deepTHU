@@ -6,6 +6,7 @@ import App from './App'
 import router from './router'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import './styles/index.less'
 
 Vue.use(Vuetify)
 

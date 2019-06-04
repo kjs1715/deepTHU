@@ -3,7 +3,7 @@ const serverURL = '/'
 
 var fileData
 
-Mock.mock(serverURL + "api/v1/src/upload", 'post', (req) => {
+Mock.mock(RegExp(serverURL + "api/v1/src/upload" + '.*'), 'post', (req) => {
   if (req.body !== null) {
     console.log(req.body)
     return {

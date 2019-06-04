@@ -16,14 +16,17 @@ export default {
         .get(serverURL + "api/v1/task/query?task_id=" + task_id)
         .then(response => {
           let responseCode = response.status
+          console.log(responseCode)
           if (responseCode === 200) {
             resolve(response.data)
           } else if(responseCode === 400 || responseCode === 404) {
             reject(response.error_info)
-            console.log("qqqqq")
           } else {
             reject(response.error_info)
           }
+        })
+        .catch(error => {
+          resolve(error.response.data)
         })
     })
   },

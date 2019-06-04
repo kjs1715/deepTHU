@@ -1,10 +1,13 @@
 <template>
   <div id="Home">
 		<div id="header" style="height: 100px;"></div> 
-		<p id="title" style="padding: 5px; margin-bottom: 10px;">Deep THU</p>
+		<p id="title" style="padding: 5px; margin: 10px;">DeepTHU</p>
 		<!-- module for src file uploading -->
 		<div id="body">
-			<div id="srcFile" v-if="nothingSuccess" style="margin-top: 100px;"> 
+			<div id="tutorial">
+				<a href="javascript:void(0)" @click="onTutorialClicked">How to use?</a>
+			</div>
+			<div id="srcFile" v-if="nothingSuccess"> 
 				<v-btn
 					:color="!localFileUploaded ? 'blue-grey' : 'green'"
 					@click="onUploadButtonClicked"
@@ -17,17 +20,17 @@
 				</v-btn>
 				<v-btn
 					@click="submitVideo"
-					:disabled="btnDisable"
+					:disabled="btnDisable || uploadDisable"
 				>
 					<v-icon left>cloud_upload</v-icon>
-					 Upload
-				</v-btn>
+					Upload
+				</v-btn>	
 			</div>
 			<div id="jumpSrcFile">
 				<a href="javascript:void(0)" v-if="nothingSuccess" @click="onJumpSrcFileClicked">If you have task id for srcFile, click here</a>
 			</div>
 			<!-- module for dst file uploading -->
-			<div id="dstFile" v-if="srcFileSuccess" style="margin-top: 100px;"> 
+			<div id="dstFile" v-if="srcFileSuccess"> 
 				<v-btn
 					:color="!localFileUploaded ? 'blue-grey' : 'green'"
 					@click="onUploadButtonClicked"
@@ -40,7 +43,7 @@
 				</v-btn>
 				<v-btn
 					@click="submitVideo"
-					:disabled="btnDisable"
+					:disabled="btnDisable || uploadDisable"
 				>
 					<v-icon left>cloud_upload</v-icon>
 					 Upload
@@ -53,6 +56,7 @@
 			    solo-inverted
       		dark
 					disabled
+					:style="srcFileSuccess ? 'margin-top: 68px;' : 'margin-top: 34px;' "
 				>
 				</v-text-field>
 			</div>
@@ -71,10 +75,12 @@
 					persistent
 					max-width="700"
 				>
-					<v-card dark color="red lighten-2">
+					<v-card dark color="red">
 						<v-card-title>
 							<v-icon left large>block</v-icon>Error
 						</v-card-title>
+					</v-card>
+					<v-card>
 						<v-card-text v-if="isBigFileDialog">
 							Your file should be smaller than {{ sizeLimit }}MB, pls upload again...
 						</v-card-text>
@@ -104,24 +110,35 @@
 					persistent
 					round
 				>
-					<v-card dark color="rgb(182, 214, 146)">
+					<v-card dark>
 						<v-card-title>
 							<v-icon dark left large>check_circle</v-icon>
 							Hurrrray!
 						</v-card-title>
+					</v-card>
+					<v-card>
 						<v-card-text>
 							Successfully Uploaded {{ srcOrDst }} File!!
+								<v-text-field
+										:value="taskId"
+										readonly
+										class="text-xs-center"
+										label="TaskID"
+									>
+										<v-spacer></v-spacer>
+								</v-text-field>
+								<v-btn
+									round
+									@click="allDialogChange"
+								>
+									<font color="black">OK</font>
+								</v-btn>
 						</v-card-text>
+
 						<v-card-actions>
 							<v-spacer></v-spacer>
 						</v-card-actions>
-						<v-btn
-							color="white"
-							round
-							@click="allDialogChange"
-						>
-							<font color="black">OK</font>
-						</v-btn>
+
 					</v-card>
 				</v-dialog>
 				<!-- loading dialog -->
@@ -155,20 +172,21 @@
 					max-width="700"
 				>
 					<v-card
-						color="rgb(161, 191, 207)"
 						dark
 					>
 						<v-card-title>
 							<v-icon dark left large>work</v-icon>
 							Succeed!
 						</v-card-title>
+					</v-card>
+					<v-card>
 						<v-card-text>
 							Here is your task id, pls copy it!
 							<v-text-field
 								:value="taskId"
 								readonly
-								dark
 								class="text-xs-center"
+								label="Task ID"
 							>
 								<v-spacer></v-spacer>
 							</v-text-field>
@@ -189,16 +207,17 @@
 					max-width="700"
 				>
 					<v-card
-						color="blue"
 						dark
 					>
-						<v-card-title>
-							Input your task ID here!
+						<v-card-title >
+							<font> Input your task ID here!</font>
 						</v-card-title>
+					</v-card>
+					<v-card>
 						<v-card-text>
 							<v-text-field
-								:value="taskId"
-								dark
+								v-model="taskId"
+								label="Task ID"
 							>
 							</v-text-field>
 							<v-btn
@@ -230,6 +249,7 @@
 					>
 						<v-card-title
 						>
+							<v-icon left dark color="white">pan_tool</v-icon>
 							<font color="white"> Before Upload...</font>
 						</v-card-title>
 					</v-card>
@@ -238,27 +258,43 @@
 					>
 						<v-card-text
 						>
-						<v-text-field
-							v-model="email"
-							label="E-mail (Recommanded)"
-							:rules="[rules.email]"
-						>
-
-						</v-text-field>
+							<v-text-field
+								v-model="email"
+								label="E-mail (Recommanded)"
+								:rules="[rules.email]"
+							>
+							</v-text-field>
+							<br>
+							<v-select
+								v-model="row"
+								:items="times"
+								label="Training Time"
+								single-line
+								chips
+							>
+							</v-select>
+							<br><br>
 						</v-card-text>
 
 						<v-btn
 							@click="onUserFormOkClicked"
+							:disabled="btnOKdisable || row == null"
 							round
 						>
 							<font color="black">OK</font>
 						</v-btn>
 						<v-btn
 							round
+							@click="onUserFormBackClicked"
 						>
 							<font color="black">BACK</font>
 						</v-btn>
 					</v-card>	
+				</v-dialog>
+				<!-- tutorial dialog -->
+				<v-dialog
+					v-model="tutorialDialog"
+				>
 
 				</v-dialog>
 		</div>
@@ -270,6 +306,7 @@ import TaskStatusView from './TaskStatusView'
 import ResultDownloadView from './ResultDownload'
 import { Promise, resolve } from 'q';
 import { error } from 'util';
+import TaskStatusRequest from '../API/TaskStatusRequest';
 
 export default {
 	name: 'Home',
@@ -303,21 +340,52 @@ export default {
 			isLoading: false,
 
 			btnDisable: false,
+			uploadDisable: false,
 
 			btnFileUploadStr: "Find src file",
 
 			// email
-			email: ' ',
+			email: '',
 			// training time 
-			training_time: 4,
+			training_time: 0,
+			times: [
+				'1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'
+			],
 
 			// variables for user form data
 			userFormData: false, 
 			userDialog: false,
+			btnOKdisable: false,
+
+			// row chosen variable for checkbox in user Form
+			row: null,
+
+			// tutorial
+			tutorialDialog: false,
 
 			rules: {
 				email: value => {
-				const pattern = /(^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$)|(^$)/;
+				const pattern = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$")
+				const pattern1 = /^\d+@qq\.com$/;
+				if (value == '') {
+					this.btnOkDisable = false
+					return true
+				}
+				if (!pattern.test(value)) {
+					this.btnOkDisable = true
+				} else {
+					this.btnOkDisable = false
+				}
+				// let test1 = pattern1.test(value)
+				// if (test) {
+				// 	this.btnOKdisable = false
+				// } else {
+				// 	if (!test) {
+				// 		this.btnOKdisable = true
+				// 	} else {
+				// 		this.btnOKdisable = false
+				// 	}
+				// }
       	return pattern.test(value) || 'Invalid e-mail.'
 		}
 	},
@@ -332,11 +400,11 @@ export default {
 
 
 	/*
-	TODO: 1. Upload button: after btn clicked, it should become green and show file ref in a textfield or other components
 	TODO: 2. adjust some sizes of components, it looks disgusting 
 	TODO: 3. formData: back button; checkbox; testing
 	TODO: 4. maybe I need to add history func in order to make sure people do not forget their ids
 	TODO: 5. add a function for copy ids from ctrl-c (clipboard)
+	TODO: 6. wrong with jump Src
 	*/
 	watch: {
 		// for preventing other parts (Ex: buttons, input form) could be clicked while dialog is existing
@@ -365,7 +433,7 @@ export default {
 			} else if (newVal == false && (this.nothingSuccess || this.dstFileSuccess)) {
 				this.btnFileUploadStr = "find src file"
 			}
-		}, 
+		},
 	},
 
 	methods: {
@@ -427,8 +495,10 @@ export default {
 							this.srcFileSuccess = true
 							this.nothingSuccess = false
 							this.btnDisable = true
+							this.uploadDisable = false
 							this.fileData = null
 							this.localFileUploaded = false
+							this.uploadDisable = false
 						})
 						.catch((error_info) => {
 							this.onErrorDialogTriggered(error_info)
@@ -444,10 +514,11 @@ export default {
 						.postDstRequest(this.fileData, this.taskId)
 						.then((res) => {
 							this.srcOrDst = 'dst'
-							this.successDialog = true
+							// this.successDialog = true
 							this.srcFileSuccess = false
-							this.dstFileSuccess = true;
+							this.allSuccess = true
 							this.btnDisable = true
+							this.uploadDisble = false
 							this.fileData = null
 							this.localFileUploaded = false
 							console.log("success")
@@ -511,10 +582,36 @@ export default {
 		},
 
 		submitButtonClicked() {
+			// TODO: needed testing with server
+			console.log(this.taskId)
+			console.log("submit button clicked")
 			this.skipSrcFileDialog = false
-			this.srcFileSuccess = true
-			this.nothingSuccess = false
 			this.btnDisable = false
+			this.uploadDisable = true
+			this.isLoading = true
+			TaskStatusRequest
+			 .getTaskStatus(this.taskId)
+			 .then((res) => {
+				 if (res.error_info != null) {
+						this.errorText = res.error_info
+						this.errorDialog = true
+						this.isErrorDialog = true
+						this.taskId = ''
+						return 
+				 }
+				 	console.log(res)
+				 	console.log("succeed submit")
+				 	this.srcFileSuccess = true
+					this.nothingSuccess = false
+					this.fileData = null
+					this.srcOrDst = 'dst'
+					this.localFileUploaded = false
+					this.btnFileUploadStr = "Find dst file"
+			 })
+			 .then(() => {
+				 this.isLoading = false
+				 this.uploadDisable = false
+			 })
 		},
 
 		onUploadButtonClicked() {
@@ -530,7 +627,21 @@ export default {
 			this.userFormData = true
 			this.userDialog = false
 			this.btnDisable = false
+			this.uploadDisable = true
 			this.isLoading = false
+			this.training_time = this.row
+			console.log(this.training_time)
+			this.submitVideo()
+		},
+
+		onUserFormBackClicked() {
+			this.userDialog = false
+			this.isLoading = false
+			this.btnDisable = false
+		},
+
+		onTutorialClicked() {
+			this.tutorialDialog = true
 		},
 
 		// back to the firt state of website
@@ -541,6 +652,9 @@ export default {
 			this.allSuccess = false
 			this.taskId = ''
 			this.fileData = null
+			this.email = ''
+			this.training_time = null
+			this.row = null
 			Object.assign(this.$data, this.$options.data())
 		},
 
@@ -560,7 +674,7 @@ export default {
 			return false
 		},
 
-		isVideoFile() {
+		isVideoFile () {
 			var type = this.fileData.type
 			console.log(type)
 			if (type === "video/mp4") {
@@ -569,11 +683,14 @@ export default {
 			return false
 		}, 
 
+		options () {
+				row: this.row
+		}
 	},
 }
 </script>
 
-<style>
+<style lang="scss">
 #Home {
   font-size: 25px;
 }
@@ -588,7 +705,7 @@ export default {
 }
 
 #title {
-	font-family: "Montserrat", sans-serif;
+	font-family: 'RalewayThin', sans-serif;
 	font-smoothing: antialiased;
 	font-size: 4em;	
 	font-weight: 100;
@@ -602,17 +719,29 @@ export default {
 	position: relative;
 }
 
+#tutorial a{
+	color: beige;
+	font-size: 20px;
+	position: relative;
+}
+
+#tutorial {
+	margin-top: 50px;
+}
+
 #srcFile {
 	/* width: 30%; */
+	margin-top: 50px;
 	position: relative;
 }
 
 #dstFile {
+	margin-top: 50px;
 	position: relative;
 }
 
 #fileName {
-	padding: 50px;
+	padding: 20px;
 	margin: 0 auto;
 	max-width: 700px;
 	width: 500px;

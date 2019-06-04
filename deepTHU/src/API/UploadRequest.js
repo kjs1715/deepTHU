@@ -17,18 +17,33 @@ export default {
       // body.file.push(...data_stream)
       formData.append('file', data_stream)
       console.log(formData.get('file'))
-      axios
-        .post(serverURL + 'api/v1/src/upload?training_time=' + training_time + "&email=" + email, formData)
-        .then(response => {
-          let responseCode = response.status
-          if (responseCode === 200) {
-            resolve(response.data)
-          } else if (responseCode === 400 || responseCode === 413) {
-            reject(response.error_info)
-          } else {
-            reject(response.error_info)
-          }
-        })
+      if (email != '') {
+        axios
+          .post(serverURL + 'api/v1/src/upload?training_time=' + training_time + "&email=" + email, formData)
+          .then(response => {
+            let responseCode = response.status
+            if (responseCode === 200) {
+              resolve(response.data)
+            } else if (responseCode === 400 || responseCode === 413) {
+              reject(response.error_info)
+            } else {
+              reject(response.error_info)
+            }
+          })
+      } else {
+        axios
+          .post(serverURL + 'api/v1/src/upload?training_time=' + training_time, formData)
+          .then(response => {
+            let responseCode = response.status
+            if (responseCode === 200) {
+              resolve(response.data)
+            } else if (responseCode === 400 || responseCode === 413) {
+              reject(response.error_info)
+            } else {
+              reject(response.error_info)
+            }
+          })
+      }
     })
   },
 

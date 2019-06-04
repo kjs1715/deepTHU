@@ -9,6 +9,7 @@
       @click:append="searchTaskID"
       solo-inverted
       dark
+      @keyup.enter="searchTaskID"
       >
     </v-text-field>
       Status: 
@@ -98,7 +99,7 @@ export default {
 
       // TODO: after testing pls cancel comment under here
       this.error_info = null
-      if (this.task_id)
+      // if (this.task_id)
       this.isLoading = true
       TaskStatusRequest
         .getTaskStatus(this.inputTaskID)
@@ -109,6 +110,7 @@ export default {
           console.log(this.task_state)
         })
         .catch((res) => {
+          console.log("heyyyyyy " + res)
           this.error_info = res.error_info
           console.log(res.error_info)
         })
@@ -122,6 +124,7 @@ export default {
             error_info: this.error_info
           })
           console.log('here')
+          // TODO: fix here
         })
     },
 
