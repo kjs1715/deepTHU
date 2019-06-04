@@ -128,12 +128,11 @@ if (config.build.productionGzip) {
 
   webpackConfig.plugins.push(
     new CompressionWebpackPlugin({
+      // gzip 压缩
       asset: '[path].gz[query]',
       algorithm: 'gzip',
       test: new RegExp(
-        '\\.(' +
-        config.build.productionGzipExtensions.join('|') +
-        ')$'
+          '\\.(js|css)$' // 压缩 js 与 css
       ),
       threshold: 10240,
       minRatio: 0.8
