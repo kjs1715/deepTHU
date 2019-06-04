@@ -692,7 +692,7 @@ export default {
 
 <style lang="scss">
 #Home {
-  font-size: 25px;
+	font-size: 25px;
 }
 
 .fileBtn {
