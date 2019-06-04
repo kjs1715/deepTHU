@@ -45,4 +45,8 @@ export default {
   height: 100%;
   overflow: scroll;
 }
+
+#footer {
+  padding: 50px; 
+}
 </style>
