@@ -15,12 +15,12 @@
                             solo-inverted
                             dark
                             disabled
-                            :style="srcFileSuccess ? 'margin-top: 68px;' : 'margin-top: 34px;' "
+                            style="margin-top: 34px;"
                         >
                         </v-text-field>
                     <!-- </v-flex>     -->
                 </div>
-            <div id="srcFile" v-if="nothingSuccess"> 
+            <div id="srcFile" v-if="nothingSuccess || allSuccess"> 
                 <v-btn
                     :color="!localFileUploaded ? 'blue-grey' : 'green'"
                     @click="onUploadButtonClicked"
@@ -65,6 +65,7 @@
             <!-- Search component -->
             <task-status-view
                 @getData="getData"
+                :style="!nothingSuccess ? 'margin-top: 34px;' : ''"
             >
             </task-status-view>
             <!-- Download component -->
@@ -98,7 +99,7 @@
                         <v-spacer></v-spacer>
                         <v-btn
                             color="white"
-                                round
+                            round
                             @click="allDialogChange"
                         >
                             <font color="black">OK</font>
@@ -518,6 +519,7 @@ export default {
                         .then((res) => {
                             this.srcOrDst = 'dst'
                             // this.successDialog = true
+                            this.nothingSuccess = true
                             this.srcFileSuccess = false
                             this.allSuccess = true
                             this.btnDisable = true
@@ -585,7 +587,6 @@ export default {
         },
 
         submitButtonClicked() {
-            // TODO: needed testing with server
             console.log(this.taskId)
             console.log("submit button clicked")
             this.skipSrcFileDialog = false
@@ -649,7 +650,6 @@ export default {
 
         // back to the firt state of website
         clear() {
-            this.nothingSuccess = true
             this.srcFileSuccess = false
             this.dstFileSuccess = false
             this.allSuccess = false
@@ -739,7 +739,7 @@ export default {
 }
 
 #dstFile {
-    margin-top: 50px;
+    // margin-top: 50px;
     position: relative;
 }
 

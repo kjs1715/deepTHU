@@ -12,13 +12,18 @@
       >
     </v-text-field>
       Status: 
-    <v-btn
-      :color="task_state_color"
-      @click="downloadFile"
-      :loading="isLoading"
-    >
-      {{ task_state }}
-    </v-btn>
+    <v-badge right color="blue darken-2" v-model="isQueue">
+      <template v-slot:badge>
+        <span> {{ queueNum }} </span>
+      </template>
+      <v-btn
+        :color="task_state_color"
+        @click="downloadFile"
+        :loading="isLoading"
+      >
+        {{ task_state }}
+      </v-btn>
+    </v-badge>
 		<!-- <v-dialog
       v-model="isLoading"
       hide-overlay
@@ -60,12 +65,15 @@ export default {
       task_state_color: 'second',
       error_info: null,
       task_id: '',
-
+      
+      isQueue: false,
       isLoading: false,
+
+      queueNum: '',
 
       states: {
         creating: ['CREATING', 'yellow darken-1'],
-        created: ['WAITING', 'yellow'],
+        created: ['CREATED', 'blue lighten-2'],
         finished: ['FINISHED', 'green'],
         running: ['RUNNING', 'blue'],
         failed: ['FAILED', 'red'],
@@ -111,6 +119,7 @@ export default {
             console.log(this.task_state)
             console.log(res.error_info)
           } else {
+            this.judgeWaitingQueue(res);
             console.log(res)
             this.task_id = res.task_id
             this.changeTaskState(res.task_state)
@@ -133,7 +142,7 @@ export default {
         })
     },
 
-    downloadFile() {
+    downloadFile () {
       console.log("clicked")
       if (this.task_state === this.states.finished[0]) {
         let path = TaskResultRequest.getFileAPI(this.inputTaskID)
@@ -142,7 +151,7 @@ export default {
     },
     
     // change colors of status
-    changeTaskState(task_state) {
+    changeTaskState( task_state) {
       this.task_state = task_state
       if (this.task_state === this.states.creating[0])
         this.task_state_color = this.states.creating[1]
@@ -158,6 +167,16 @@ export default {
         this.task_state_color = this.states.failed[1]
       else if (this.task_state === this.states.none[0])
         this.task_state_color = this.states.none[1]
+    },
+
+    judgeWaitingQueue (res) {
+      if (res.task_state === "CREATED") {
+        this.isQueue = true
+        this.queueNum = res.waiting_position
+      } else {
+        this.isQueue = false
+        this.queueNum = ''
+      }
     }
   }
 }
