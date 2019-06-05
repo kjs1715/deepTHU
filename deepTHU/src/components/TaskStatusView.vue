@@ -7,8 +7,7 @@
       label="Input your Task ID Here and Check for Progress"
       color="rgb(245,245,220)"
       @click:append="searchTaskID"
-      solo-inverted
-      dark
+      solo
       @keyup.enter="searchTaskID"
       >
     </v-text-field>
@@ -66,7 +65,7 @@ export default {
 
       states: {
         creating: ['CREATING', 'yellow darken-1'],
-        created: ['CREATED', 'yellow'],
+        created: ['WAITING', 'yellow'],
         finished: ['FINISHED', 'green'],
         running: ['RUNNING', 'blue'],
         failed: ['FAILED', 'red'],
@@ -119,7 +118,7 @@ export default {
           }
         })
         .catch((res) => {
-
+            // nothing
         })
         .then(() => {
           this.isLoading = false
@@ -131,7 +130,6 @@ export default {
             error_info: this.error_info
           })
           console.log('here')
-          // TODO: fix here
         })
     },
 
@@ -148,8 +146,10 @@ export default {
       this.task_state = task_state
       if (this.task_state === this.states.creating[0])
         this.task_state_color = this.states.creating[1]
-      else if (this.task_state === this.states.created[0])
+      else if (this.task_state === this.states.created[0]) {
         this.task_state_color = this.states.created[1]
+        this.task_state = "WAITING"
+      }
       else if (this.task_state === this.states.running[0])
         this.task_state_color = this.states.running[1]
       else if (this.task_state === this.states.finished[0])
