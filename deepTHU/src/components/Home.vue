@@ -82,16 +82,16 @@
 					</v-card>
 					<v-card>
 						<v-card-text v-if="isBigFileDialog">
-							Your file should be smaller than {{ sizeLimit }}MB, pls upload again...
+							Size limit {{ sizeLimit }}MB, pls upload again.
 						</v-card-text>
 						<v-card-text v-else-if="noFileDialog">
-							No file input!!! Pls upload a file first....
+							No file input! Pls upload a file first.
 						</v-card-text>
 						<v-card-text v-else-if="isErrorDialog">
 							{{ errorText }}
 						</v-card-text>
 						<v-card-text v-else-if="isNotVideoFileDialog">
-							Pls input correct type of video file!! (Now only supporting mp4)
+							Pls input mp4 file!
 						</v-card-text>
 						<v-spacer></v-spacer>
 						<v-btn
@@ -300,6 +300,7 @@
 		</div>
 	</div>
 </template>
+
 <script>
 import UploadRequest from '../API/UploadRequest'
 import TaskStatusView from './TaskStatusView'
@@ -599,14 +600,14 @@ export default {
 						this.taskId = ''
 						return 
 				 }
-				 	console.log(res)
-				 	console.log("succeed submit")
-				 	this.srcFileSuccess = true
-					this.nothingSuccess = false
-					this.fileData = null
-					this.srcOrDst = 'dst'
-					this.localFileUploaded = false
-					this.btnFileUploadStr = "Find dst file"
+				console.log(res)
+			 	console.log("succeed submit")
+			 	this.srcFileSuccess = true
+				this.nothingSuccess = false
+				this.fileData = null
+				this.srcOrDst = 'dst'
+				this.localFileUploaded = false
+				this.btnFileUploadStr = "Find dst file"
 			 })
 			 .then(() => {
 				 this.isLoading = false

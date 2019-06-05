@@ -104,15 +104,22 @@ export default {
       TaskStatusRequest
         .getTaskStatus(this.inputTaskID)
         .then((res) => {
-          console.log(res)
-          this.task_id = res.task_id
-          this.changeTaskState(res.task_state)
-          console.log(this.task_state)
+          // catch error
+          if (res.error_info != null) {
+            console.log("heyyyyyy " + res)
+            this.error_info = res.error_info
+            this.changeTaskState(this.states.none[0])
+            console.log(this.task_state)
+            console.log(res.error_info)
+          } else {
+            console.log(res)
+            this.task_id = res.task_id
+            this.changeTaskState(res.task_state)
+            console.log(this.task_state)
+          }
         })
         .catch((res) => {
-          console.log("heyyyyyy " + res)
-          this.error_info = res.error_info
-          console.log(res.error_info)
+
         })
         .then(() => {
           this.isLoading = false
