@@ -42,7 +42,11 @@ export default {
   background-size: 100% 100%;
   position: fixed;
   width: 100%;
-  height: 100%;
-  overflow: scroll;
+  height: 100%;	
+  overflow: auto;
+}
+
+#footer {
+  padding: 50px; 
 }
 </style>

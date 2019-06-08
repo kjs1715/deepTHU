@@ -7,19 +7,23 @@
       label="Input your Task ID Here and Check for Progress"
       color="rgb(245,245,220)"
       @click:append="searchTaskID"
-      solo-inverted
-      dark
+      solo
       @keyup.enter="searchTaskID"
       >
     </v-text-field>
       Status: 
-    <v-btn
-      :color="task_state_color"
-      @click="downloadFile"
-      :loading="isLoading"
-    >
-      {{ task_state }}
-    </v-btn>
+    <v-badge right color="blue darken-2" v-model="isQueue">
+      <template v-slot:badge>
+        <span> {{ queueNum }} </span>
+      </template>
+      <v-btn
+        :color="task_state_color"
+        @click="downloadFile"
+        :loading="isLoading"
+      >
+        {{ task_state }}
+      </v-btn>
+    </v-badge>
 		<!-- <v-dialog
       v-model="isLoading"
       hide-overlay
@@ -61,12 +65,15 @@ export default {
       task_state_color: 'second',
       error_info: null,
       task_id: '',
-
+      
+      isQueue: false,
       isLoading: false,
+
+      queueNum: '',
 
       states: {
         creating: ['CREATING', 'yellow darken-1'],
-        created: ['CREATED', 'yellow'],
+        created: ['CREATED', 'blue lighten-2'],
         finished: ['FINISHED', 'green'],
         running: ['RUNNING', 'blue'],
         failed: ['FAILED', 'red'],
@@ -104,15 +111,23 @@ export default {
       TaskStatusRequest
         .getTaskStatus(this.inputTaskID)
         .then((res) => {
-          console.log(res)
-          this.task_id = res.task_id
-          this.changeTaskState(res.task_state)
-          console.log(this.task_state)
+          // catch error
+          if (res.error_info != null) {
+            console.log("heyyyyyy " + res)
+            this.error_info = res.error_info
+            this.changeTaskState(this.states.none[0])
+            console.log(this.task_state)
+            console.log(res.error_info)
+          } else {
+            this.judgeWaitingQueue(res);
+            console.log(res)
+            this.task_id = res.task_id
+            this.changeTaskState(res.task_state)
+            console.log(this.task_state)
+          }
         })
         .catch((res) => {
-          console.log("heyyyyyy " + res)
-          this.error_info = res.error_info
-          console.log(res.error_info)
+            // nothing
         })
         .then(() => {
           this.isLoading = false
@@ -124,11 +139,10 @@ export default {
             error_info: this.error_info
           })
           console.log('here')
-          // TODO: fix here
         })
     },
 
-    downloadFile() {
+    downloadFile () {
       console.log("clicked")
       if (this.task_state === this.states.finished[0]) {
         let path = TaskResultRequest.getFileAPI(this.inputTaskID)
@@ -137,12 +151,14 @@ export default {
     },
     
     // change colors of status
-    changeTaskState(task_state) {
+    changeTaskState( task_state) {
       this.task_state = task_state
       if (this.task_state === this.states.creating[0])
         this.task_state_color = this.states.creating[1]
-      else if (this.task_state === this.states.created[0])
+      else if (this.task_state === this.states.created[0]) {
         this.task_state_color = this.states.created[1]
+        this.task_state = "WAITING"
+      }
       else if (this.task_state === this.states.running[0])
         this.task_state_color = this.states.running[1]
       else if (this.task_state === this.states.finished[0])
@@ -151,6 +167,16 @@ export default {
         this.task_state_color = this.states.failed[1]
       else if (this.task_state === this.states.none[0])
         this.task_state_color = this.states.none[1]
+    },
+
+    judgeWaitingQueue (res) {
+      if (res.task_state === "CREATED") {
+        this.isQueue = true
+        this.queueNum = res.waiting_position
+      } else {
+        this.isQueue = false
+        this.queueNum = ''
+      }
     }
   }
 }
