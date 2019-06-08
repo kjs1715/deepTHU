@@ -297,8 +297,85 @@
                 <!-- tutorial dialog -->
                 <v-dialog
                     v-model="tutorialDialog"
+                    max-width="900px"
+                    max-height="500px"
+                    style="overflow: auto;"
                 >
-
+                    <v-card dark>
+                        <v-card-title> 
+                            <v-icon large dark left>
+                                star
+                            </v-icon>
+                            Tutorial
+                        </v-card-title>
+                    </v-card>
+                    <v-card>
+                        <v-card-text>
+                            <h3 style="text-align: left;">介绍</h3><br>
+                            <p style="text-align: left; font-size: 18px;">
+                                这是一个基于Deepfakes的视频换脸网站，用户可以提交两个视频，第一个视频我们会提取出视频中的脸，然后将第二个视频的脸替换为前一个视频的脸。
+                            </p><br>
+                            <h3 style="text-align: left;">支持的视频格式</h3><br>
+                            <ul style="text-align: left; font-size: 18px;">
+                                <li>mp4   (推荐)</li>
+                                <li>avi</li>
+                                <li>mkv</li>
+                                <li>flv</li>
+                                <li>mov</li>
+                            </ul><br>
+                            <h3 style="text-align: left;">使用步骤</h3><br>
+                            <h5 style="text-align: left;">上传视频</h5><br>
+                            <ul style="text-align: left; font-size: 18px;">
+                                <li>
+                                    首先，通过点击   <img src="../../static/img/src_file_btn.png" alt="" align="top"> 来选择源文件（提取脸部的视频），若前一个图标变为 
+                                    <img src="../../static/img/src_file_btn_success.png" alt="" align="top"> ，则说明视频加载成功，此时用户也可以点击”Find Again“图标，重新选择视频进行加载。<br>
+                                    <br>然后通过点击 <img src="../../static/img/upload.png" alt="" align="top">，向后台服务器上传源视频文件，上传成功之后会出现提示成功的对话框，并显示有任务ID，用户可以选择此时将任务ID复制下来，也可以在上传了目的视频之后记下来。<br><br>
+                                    <strong>
+                                        注: 点击”upload“按钮会弹出对话框，用户可以填写邮箱，我们将在任务建立，失败，或完成时，把任务状态和任务ID发送给用户（选填）；<br><br>
+                                        用户可以选择视频训练时间（1~12小时），一般训练时间越长，换脸效果更好（必填），
+                                    </strong>
+                                </li><br>
+                                <li>
+                                    第二步是上传目的视频，流程与上传源视频一样。
+                                </li><br>
+                                <li>
+                                    上传了所有视频之后，我们会提供任务ID，用户可以通过任务ID查询任务和下载任务。
+                                </li><br>
+                            </ul>
+                            <h5 style="text-align: left;">查询任务状态</h5><br>
+                            <img src="../../static/img/task_status_search.png" alt="" align="top"><br><br>
+                            <ul style="text-align: left; font-size: 18px;">
+                                用户需要在搜索框里输入任务ID，点击搜索按钮，或是按Enter键都可以进行查询。查询的状态总共有五种：<br><br>
+                                <li>
+                                    <img src="../../static/img/waiting_state.png" alt="" align="top" width="90" height="35"> -> 在等待队列中
+                                </li><br>
+                                <li>
+                                    <img src="../../static/img/creating_state.png" alt="" align="top" width="90" height="35"> -> 正在创建任务
+                                </li><br>
+                                <li>
+                                    <img src="../../static/img/running_state.png" alt="" align="top" width="90" height="35"> -> 正在训练视频
+                                </li><br>
+                                <li>
+                                    <img src="../../static/img/finish_state.png" alt="" align="top" width="90" height="35"> -> 完成了任务，可以进行下载
+                                </li><br>
+                                <li>
+                                    <img src="../../static/img/failed_state.png" alt="" align="top" width="90" height="35"> -> 任务建立失败
+                                </li><br><br>
+                                <strong>注：等待队列会有号码显示，，该号码为用户在队列中的顺序。</strong><br><br>
+                                <img src="../../static/img/waiting_queue_state.png" alt="" align="middle" width="130" height="60"><br><br>
+                            </ul>
+                            <h5 style="text-align: left;">下载任务</h5><br>
+                            <p style="text-align: left; font-size: 18px;">
+                                查询到任务的状态之后，若是 <img src="../../static/img/finish_state.png" alt="" align="top" width="90" height="35"> 状态，点击该按钮即可下载视频。
+                            </p>
+                        </v-card-text>
+                        <v-btn
+                            @click="tutorialDialog = false"
+                            round
+                        >
+                            <font color="black">I GOT IT</font>
+                        </v-btn>
+                    </v-card>
                 </v-dialog>
         </div>
     </div>
@@ -572,6 +649,7 @@ export default {
             if (this.dstFileSuccess == true && this.allSuccess === false) {
                 this.allSuccess = true;
             }
+            console.log("allDialog clicked")
         },
 
         onErrorDialogTriggered(error_info) {
@@ -646,6 +724,7 @@ export default {
 
         onTutorialClicked() {
             this.tutorialDialog = true
+            console.log("tutorial clicked")
         },
 
         // back to the firt state of website
