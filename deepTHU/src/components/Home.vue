@@ -326,10 +326,10 @@
                                 <li>flv</li>
                                 <li>mov</li>
                             </ul><br>
-                            <h3 style="text-align: left;">视频长度</h3><br>
+                            <h3 style="text-align: left;">视频要求</h3><br>
                             <p style="text-align: left; font-size: 18px;">
-                                建议时长2~8分钟，时间太长服务器会限制文件大小（{{ sizeLimit }}MB），时间过短训练效果会比较差。<br><br>
-
+                                建议视频长度为2~8分钟，时间太长服务器会限制文件大小（{{ sizeLimit }}MB），时间过短训练效果会比较差。<br><br>
+                                <strong><font color="red">为了效果，请尽量保证脸部足够清晰且不能太小。</font></strong><br><br>
                             </p><br>
                             <h3 style="text-align: left;">使用步骤</h3><br>
                             <h5 style="text-align: left;">上传视频</h5><br>
