@@ -76,7 +76,7 @@
                 <v-dialog
                     v-model="errorDialog"
                     persistent
-                    max-width="700"
+                    max-width="900"
                 >
                     <v-card dark color="red">
                         <v-card-title>
@@ -85,7 +85,7 @@
                     </v-card>
                     <v-card>
                         <v-card-text v-if="isBigFileDialog">
-                            Size limit {{ sizeLimit }}MB, pls upload again.
+                            Size limit: {{ sizeLimit }}MB, pls upload again.
                         </v-card-text>
                         <v-card-text v-else-if="noFileDialog">
                             No file input! Pls upload a file first.
@@ -108,7 +108,7 @@
                 </v-dialog>
                 <!-- success dialogs -->
                 <v-dialog
-                    max-width="700"
+                    max-width="900"
                     v-model="successDialog"
                     persistent
                     round
@@ -172,7 +172,7 @@
                 <v-dialog
                     v-model="allSuccess"
                     persistent
-                    max-width="700"
+                    max-width="900"
                 >
                     <v-card
                         dark
@@ -207,7 +207,7 @@
                 <v-dialog
                     v-model="skipSrcFileDialog"
                     persistent
-                    max-width="700"
+                    max-width="900"
                 >
                     <v-card
                         dark
@@ -244,7 +244,7 @@
                 <!-- userFormDialog -->
                 <v-dialog
                     v-model="userDialog"
-                    max-width="700px"
+                    max-width="900px"
                     persistent
                 >
                     <v-card
@@ -281,7 +281,7 @@
 
                         <v-btn
                             @click="onUserFormOkClicked"
-                            :disabled="btnOKdisable || row == null"
+                            :disabled="(row != null && btnOKdisable) || (row == null && !btnOKdisable)"
                             round
                         >
                             <font color="black">OK</font>
@@ -325,7 +325,8 @@
                             </ul><br>
                             <h3 style="text-align: left;">视频长度</h3><br>
                             <p style="text-align: left; font-size: 18px;">
-                                建议时长2~8分钟，时间太长服务器会限制文件大小，时间过短训练效果会比较差。
+                                建议时长2~8分钟，时间太长服务器会限制文件大小（{{ sizeLimit }}MB），时间过短训练效果会比较差。<br><br>
+
                             </p><br>
                             <h3 style="text-align: left;">使用步骤</h3><br>
                             <h5 style="text-align: left;">上传视频</h5><br>
@@ -336,8 +337,9 @@
                                     <br>然后通过点击 <img src="../../static/img/upload.png" alt="" align="top">，向后台服务器上传源视频文件，上传成功之后会出现提示成功的对话框，并显示有任务ID，用户可以选择此时将任务ID复制下来，也可以在上传了目的视频之后记下来。<br><br>
                                     <strong>
                                         注: 点击”upload“按钮会弹出对话框，用户可以填写邮箱，我们将在任务建立，失败，或完成时，把任务状态和任务ID发送给用户（选填）；<br><br>
-                                        用户可以选择视频训练时间（1~12小时），一般训练时间越长，换脸效果更好（必填），
+                                        用户需要选择视频训练时间（1~7小时）（必填）。<br><br>
                                     </strong>
+                                     <strong>一般</strong>选择3~5小时会有不错的效果。<br><br>
                                 </li><br>
                                 <li>
                                     第二步是上传目的视频，流程与上传源视频一样。
@@ -403,7 +405,7 @@ export default {
             taskId: null,
             srcOrDst: null,
             errorText: null,
-            sizeLimit: 50,
+            sizeLimit: 200,
 
             // states
             nothingSuccess: true,
@@ -434,7 +436,7 @@ export default {
             // training time 
             training_time: 0,
             times: [
-                '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'
+                '1', '2', '3', '4', '5', '6', '7'
             ],
 
             // variables for user form data
@@ -453,14 +455,15 @@ export default {
                 const pattern = new RegExp("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$")
                 const pattern1 = /^\d+@qq\.com$/;
                 if (value == '') {
-                    this.btnOkDisable = false
+                    this.btnOkdisable = false
                     return true
                 }
                 if (!pattern.test(value)) {
-                    this.btnOkDisable = true
+                    this.btnOkdisable = true
                 } else {
-                    this.btnOkDisable = false
+                    this.btnOkdisable = false
                 }
+                console.log(this.btnOkdisable)
                 // let test1 = pattern1.test(value)
                 // if (test) {
                 // 	this.btnOKdisable = false
@@ -524,10 +527,9 @@ export default {
     methods: {
         // function for uploading files onto browser, including size limit for file
         getFile (event) {
-            console.log("get file here")
             this.fileData = event.target.files[0]
             this.fileDataName = event.target.files[0].name
-            console.log(this.fileData)
+            console.log(event.target.files)
             if (this.isBigFile) {
                 this.isBigFileDialog = true
                 this.errorDialog = true
@@ -829,7 +831,7 @@ export default {
 #fileName {
     padding-top: 20px;
     margin: 0 auto;
-    max-width: 700px;
+    max-width: 900px;
     width: 320px;
     align-self: center;
 }
@@ -846,4 +848,4 @@ export default {
 </style>
 
 
-// TODO: needto justify distance btw components
+// TODO: modifiy training time
