@@ -94,7 +94,7 @@
                             {{ errorText }}
                         </v-card-text>
                         <v-card-text v-else-if="isNotVideoFileDialog">
-                            Pls input mp4 file!
+                            Pls input video file!
                         </v-card-text>
                         <v-spacer></v-spacer>
                         <v-btn
@@ -315,6 +315,9 @@
                             <p style="text-align: left; font-size: 18px;">
                                 这是一个基于Deepfakes的视频换脸网站，用户可以提交两个视频，第一个视频我们会提取出视频中的脸，然后将第二个视频的脸替换为前一个视频的脸。
                             </p><br>
+                            <p style="text-align: left; font-size: 18px;">
+                                <strong><font color="red">注：如果两张看起来就不可能会有好效果的脸拿来训练，请做好效果很差的心理准备！<br><br>最终的效果取决于视频质量、视频时长、训练时长以及两张脸本身的特征。</font></strong><br><br>
+                            </p>
                             <h3 style="text-align: left;">支持的视频格式</h3><br>
                             <ul style="text-align: left; font-size: 18px;">
                                 <li>mp4   (推荐)</li>
@@ -765,8 +768,9 @@ export default {
 
         isVideoFile () {
             var type = this.fileData.type
+            type = type.substring(type.length-3, type.length)
             console.log(type)
-            if (type === "video/mp4") {
+            if (type === "mp4" || type === "avi" || type === "mkv" || type === "flv" || type === "mov") {
                 return true
             }
             return false
