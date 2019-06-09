@@ -323,6 +323,10 @@
                                 <li>flv</li>
                                 <li>mov</li>
                             </ul><br>
+                            <h3 style="text-align: left;">视频长度</h3><br>
+                            <p style="text-align: left; font-size: 18px;">
+                                建议时长2~8分钟，时间太长服务器会限制文件大小，时间过短训练效果会比较差。
+                            </p><br>
                             <h3 style="text-align: left;">使用步骤</h3><br>
                             <h5 style="text-align: left;">上传视频</h5><br>
                             <ul style="text-align: left; font-size: 18px;">
