@@ -544,17 +544,17 @@ export default {
                 this.localFileUploaded = false
                 return 
             }
-            if (!this.isVideoFile) {
-                this.isNotVideoFileDialog = true
-                this.errorDialog = true
-                this.clearFilePaths()
-                // this.btnDisable = true
-                this.fileData = null
-                this.fileDataName = ''
-                this.localFileUploaded = false
-                console.log("triggered file extention error")
-                return 
-            }
+            // if (!this.isVideoFile) {
+            //     this.isNotVideoFileDialog = true
+            //     this.errorDialog = true
+            //     this.clearFilePaths()
+            //     // this.btnDisable = true
+            //     this.fileData = null
+            //     this.fileDataName = ''
+            //     this.localFileUploaded = false
+            //     console.log("triggered file extention error")
+            //     return 
+            // }
             this.localFileUploaded = true
             console.log(this.fileData)
         },
@@ -579,21 +579,26 @@ export default {
                     UploadRequest
                         .postSrcRequest(this.fileData, this.training_time, this.email)
                         .then((res) => {
-                            console.log(res)
-                            this.taskId = res.task_id
-                            this.srcOrDst = 'src'
-                            this.successDialog = true
-                            this.srcFileSuccess = true
-                            this.nothingSuccess = false
-                            this.btnDisable = true
-                            this.uploadDisable = false
-                            this.fileData = null
-                            this.localFileUploaded = false
-                            this.uploadDisable = false
+                            // error
+                            if (res.error_info != null) {
+                                this.onErrorDialogTriggered(res.error_info)
+                                console.log("here is error")
+                            } else {
+                                console.log("res is here")
+                                this.taskId = res.task_id
+                                this.srcOrDst = 'src'
+                                this.successDialog = true
+                                this.srcFileSuccess = true
+                                this.nothingSuccess = false
+                                this.btnDisable = true
+                                this.fileData = null
+                                this.localFileUploaded = false
+                                this.uploadDisable = false
+                            }
                         })
-                        .catch((error_info) => {
-                            this.onErrorDialogTriggered(error_info)
-                            console.log(err)
+                        .catch((err) => {
+                            this.onErrorDialogTriggered(err.error_info)
+                            console.log("here is error")
                         })
                         .then(() => {
                             this.isLoading = false
@@ -604,20 +609,26 @@ export default {
                     UploadRequest
                         .postDstRequest(this.fileData, this.taskId)
                         .then((res) => {
-                            this.srcOrDst = 'dst'
-                            // this.successDialog = true
-                            this.nothingSuccess = true
-                            this.srcFileSuccess = false
-                            this.allSuccess = true
-                            this.btnDisable = true
-                            this.uploadDisble = false
-                            this.fileData = null
-                            this.localFileUploaded = false
-                            console.log("success")
+                            // error
+                            if (res.error_info != null) {
+                                this.onErrorDialogTriggered(res.error_info)
+                                console.log()
+                            } else {
+                                this.srcOrDst = 'dst'
+                                // this.successDialog = true
+                                this.nothingSuccess = true
+                                this.srcFileSuccess = false
+                                this.allSuccess = true
+                                this.btnDisable = true
+                                this.uploadDisable = false
+                                this.fileData = null
+                                this.localFileUploaded = false
+                                console.log("success")
+                            }
                         })
-                        .catch((error_info) => {
-                            onErrorDialogTriggered(error_info)
-                            console.log('failed')
+                        .catch((err) => {
+                            this.onErrorDialogTriggered(err.error_info)
+                            console.log("here is error")
                         })
                         .then(() => {
                             this.isLoading = false
@@ -666,6 +677,10 @@ export default {
             this.errorDialog = true
             this.isErrorDialog = true
             this.errorText = error_info
+            this.uploadDisable = false
+            this.fileData = null
+            this.localFileUploaded = false
+            this.clearFilePaths()
         },
 
         onJumpSrcFileClicked() {
@@ -684,21 +699,30 @@ export default {
             TaskStatusRequest
              .getTaskStatus(this.taskId)
              .then((res) => {
-                 if (res.error_info != null) {
-                        this.errorText = res.error_info
-                        this.errorDialog = true
-                        this.isErrorDialog = true
-                        this.taskId = ''
-                        return 
-                 }
-                console.log(res)
-                 console.log("succeed submit")
-                 this.srcFileSuccess = true
-                this.nothingSuccess = false
-                this.fileData = null
-                this.srcOrDst = 'dst'
-                this.localFileUploaded = false
-                this.btnFileUploadStr = "Find dst file"
+                if (res.error_info != null) {
+                    this.errorText = res.error_info
+                    this.onErrorDialogTriggered(this.errorText)
+                    this.taskId = ''
+                    this.
+                    return 
+                }
+                 // if taskId is not CREATING, return
+                if (res.task_state === "CREATING") {
+                    console.log(res)
+                    console.log("succeed submit")
+                    this.srcFileSuccess = true
+                    this.nothingSuccess = false
+                    this.fileData = null
+                    this.srcOrDst = 'dst'
+                    this.localFileUploaded = false
+                    this.btnFileUploadStr = "Find dst file"
+                } else {
+                    this.onErrorDialogTriggered("Task is already " + res.task_state + "!")
+                    this.taskId = ''
+                }
+             })
+             .catch(() => {
+
              })
              .then(() => {
                  this.isLoading = false

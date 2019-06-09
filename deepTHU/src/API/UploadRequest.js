@@ -22,6 +22,8 @@ export default {
           .post(serverURL + 'api/v1/src/upload?training_time=' + training_time + "&email=" + email, formData)
           .then(response => {
             let responseCode = response.status
+            console.log(responseCode)
+            console.log(response)
             if (responseCode === 200) {
               resolve(response.data)
             } else if (responseCode === 400 || responseCode === 413) {
@@ -29,6 +31,10 @@ export default {
             } else {
               reject(response.error_info)
             }
+          })
+          .catch(error => {
+            console.log("error")
+            resolve(error.response.data)
           })
       } else {
         axios
@@ -42,6 +48,10 @@ export default {
             } else {
               reject(response.error_info)
             }
+          })
+          .catch(error => {
+            console.log("error")
+            resolve(error.response.data)
           })
       }
     })
@@ -64,6 +74,10 @@ export default {
           } else {
             reject(response.error_info)
           }
+        })
+        .catch(error => {
+          console.log("error")
+          resolve(error.response.data)
         })
     })
   }
