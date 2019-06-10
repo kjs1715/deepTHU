@@ -323,7 +323,6 @@
                                 <li>mp4   (推荐)</li>
                                 <li>avi</li>
                                 <li>mkv</li>
-                                <li>flv</li>
                                 <li>mov</li>
                             </ul><br>
                             <h3 style="text-align: left;">视频要求</h3><br>
@@ -794,7 +793,7 @@ export default {
             var type = this.fileData.type
             type = type.substring(type.length-3, type.length)
             console.log(type)
-            if (type === "mp4" || type === "avi" || type === "mkv" || type === "flv" || type === "mov") {
+            if (type === "mp4" || type === "avi" || type === "mkv" || type === "mov") {
                 return true
             }
             return false
