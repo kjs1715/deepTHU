@@ -543,17 +543,17 @@ export default {
                 this.localFileUploaded = false
                 return 
             }
-            // if (!this.isVideoFile) {
-            //     this.isNotVideoFileDialog = true
-            //     this.errorDialog = true
-            //     this.clearFilePaths()
-            //     // this.btnDisable = true
-            //     this.fileData = null
-            //     this.fileDataName = ''
-            //     this.localFileUploaded = false
-            //     console.log("triggered file extention error")
-            //     return 
-            // }
+            if (!this.isVideoFile) {
+                this.isNotVideoFileDialog = true
+                this.errorDialog = true
+                this.clearFilePaths()
+                // this.btnDisable = true
+                this.fileData = null
+                this.fileDataName = ''
+                this.localFileUploaded = false
+                console.log("triggered file extention error")
+                return 
+            }
             this.localFileUploaded = true
             console.log(this.fileData)
         },
