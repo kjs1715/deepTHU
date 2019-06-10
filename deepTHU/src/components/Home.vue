@@ -319,13 +319,13 @@
                                 <strong><font color="red">注：如果两张看起来就不可能会有好效果的脸拿来训练，请做好效果很差的心理准备！<br><br>最终的效果取决于视频质量、视频时长、训练时长以及两张脸本身的特征。</font></strong><br><br>
                             </p><br>
                             <h3 style="text-align: left;">换脸效果</h3><br>
-                            <div style="float: left;">
+                            <div style="display: inline;">
                                 <img src="../../static/img/src.gif" alt="" align="middle" width="250px" height="175px">
                                 +
                                 <img src="../../static/img/dst.gif" alt="" align="middle" width="250px" height="175px">
                                 =
                                 <img src="../../static/img/result.gif" alt="" align="middle" width="250px" height="175px">
-                            </div><br><br><br><br><br><br>
+                            </div><br><br>
                             <h3 style="text-align: left;">支持的视频格式</h3><br>
                             <ul style="text-align: left; font-size: 18px;">
                                 <li>mp4   (推荐)</li>
